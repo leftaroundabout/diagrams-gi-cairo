@@ -266,6 +266,34 @@ instance Mainable (Animation Cairo V2 Double) where
 
     mainRender (opts, l) d =  defaultAnimMainRender chooseRender output opts d >> defaultLoopRender l
 
+-- | Extra options for animated GIFs.
+data GifOpts = GifOpts { _dither     :: Bool
+                       , _noLooping  :: Bool
+                       , _loopRepeat :: Maybe Int}
+
+makeLenses ''GifOpts
+
+-- | Command line parser for 'GifOpts'.
+--   @--dither@ turn dithering on.
+--   @--looping-off@ turn looping off, i.e play GIF once.
+--   @--loop-repeat@ number of times to repeat the GIF after the first playing.
+--   this option is only used if @--looping-off@ is not set.
+instance Parseable GifOpts where
+  parser = GifOpts <$> switch
+                       ( long "dither"
+                      <> help "Turn on dithering." )
+                   <*> switch
+                       ( long "looping-off"
+                      <> help "Turn looping off" )
+                   <*> ( optional . option auto )
+                       ( long "loop-repeat"
+                      <> help "Number of times to repeat" )
+
+instance Mainable [(QDiagram Cairo V2 Double Any, GifDelay)] where
+    type MainOpts [(QDiagram Cairo V2 Double Any, GifDelay)] = (DiagramOpts, GifOpts)
+
+    mainRender (dOpts, gOpts) ds = gifRender (dOpts, gOpts) ds
+
 -- | @gifMain@ takes a list of diagram and delay time pairs and produces a
 --   command line program to generate an animated GIF, with options @GifOpts@.
 --   "Delay times are in 1/100ths of a second."
@@ -294,34 +322,6 @@ instance Mainable (Animation Cairo V2 Double) where
 -- @
 gifMain :: [(QDiagram Cairo V2 Double Any, GifDelay)] -> IO ()
 gifMain = mainWith
-
--- | Extra options for animated GIFs.
-data GifOpts = GifOpts { _dither     :: Bool
-                       , _noLooping  :: Bool
-                       , _loopRepeat :: Maybe Int}
-
-makeLenses ''GifOpts
-
--- | Command line parser for 'GifOpts'.
---   @--dither@ turn dithering on.
---   @--looping-off@ turn looping off, i.e play GIF once.
---   @--loop-repeat@ number of times to repeat the GIF after the first playing.
---   this option is only used if @--looping-off@ is not set.
-instance Parseable GifOpts where
-  parser = GifOpts <$> switch
-                       ( long "dither"
-                      <> help "Turn on dithering." )
-                   <*> switch
-                       ( long "looping-off"
-                      <> help "Turn looping off" )
-                   <*> ( optional . option auto )
-                       ( long "loop-repeat"
-                      <> help "Number of times to repeat" )
-
-instance Mainable [(QDiagram Cairo V2 Double Any, GifDelay)] where
-    type MainOpts [(QDiagram Cairo V2 Double Any, GifDelay)] = (DiagramOpts, GifOpts)
-
-    mainRender (dOpts, gOpts) ds = gifRender (dOpts, gOpts) ds
 
 imageRGB8FromUnsafePtr :: Int -> Int -> ForeignPtr Word8 -> Image PixelRGB8
 imageRGB8FromUnsafePtr w h ptr = pixelMap f cImg
