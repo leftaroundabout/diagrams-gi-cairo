@@ -3,6 +3,9 @@ Version:             1.4.1.1
 Synopsis:            Cairo backend for diagrams drawing EDSL
 Description:         A full-featured backend for rendering
                      diagrams using the cairo rendering engine.
+                     This is intended to be
+                     a drop-in replacement for diagrams-cairo, built
+                     on top of the more up-to-date gi-cairo package.
                      .
                      This ultimately depends on a C library, via
                      Haskell's FFI, and can be difficult to install on
