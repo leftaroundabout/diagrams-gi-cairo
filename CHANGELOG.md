@@ -1,3 +1,10 @@
+## [v1.4.2](https://github.com/diagrams/diagrams-gi-cairo/tree/v1.4.2) (2022-12-06)
+
+- Initial release of `diagrams-gi-cairo`.
+- Builds with GHC 8.10, 9.0, 9.2, and 9.4
+
+# Changelog for predecessor package, diagrams-cairo
+
 ## [v1.4.1.1](https://github.com/diagrams/diagrams-cairo/tree/v1.4.1.1) (2019-01-11)
 
 - Drop GHC 7.10 and 8.0 support
