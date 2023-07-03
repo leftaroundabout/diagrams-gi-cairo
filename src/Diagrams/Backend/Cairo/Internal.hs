@@ -164,7 +164,9 @@ instance Backend Cairo V2 Double where
     where
       r = runRenderM .runC . toRender $ t
       renderIO = do
-        let surfaceF s = C.renderWith s r
+        let surfaceF s = do
+              C.renderWith s r
+              C.surfaceFinish s
             V2 w h = specToSize 1 (opts^.cairoSizeSpec)
         case opts^.cairoOutputType of
           PNG ->
