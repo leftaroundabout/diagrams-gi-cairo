@@ -171,7 +171,7 @@ instance Backend Cairo V2 Double where
         case opts^.cairoOutputType of
           PNG ->
             C.withImageSurface C.FormatARGB32 (round w) (round h) $ \surface -> do
-              surfaceF surface
+              C.renderWith surface r
               C.surfaceWriteToPNG surface (opts^.cairoFileName)
           PS  -> C.withPSSurface  (opts^.cairoFileName) w h surfaceF
           PDF -> C.withPDFSurface (opts^.cairoFileName) w h surfaceF
